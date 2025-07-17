@@ -39,3 +39,17 @@ tags = {
 Name = "turn-server"
 }
 }
+
+resource "aws_s3_bucket" "project_bucket" {
+  bucket = "my-bucket-1123" # Must be globally unique
+  acl    = "private"
+
+  versioning {
+    enabled = true
+  }
+
+  tags = {
+    Name        = "ProjectBucket"
+    Environment = "Dev"
+  }
+}
