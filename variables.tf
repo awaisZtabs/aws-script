@@ -6,8 +6,8 @@ variable "ami_id" {
 default = "ami-0150ccaf51ab55a51"
 }
 variable "ami" {
-  description = "The AMI ID to use for the EC2 instance"
-  type        = "ami-0150ccaf51ab55a51"
+  description = "The AMI ID to use"
+  type        = string  # ✅ Correct type declaration
 }
 variable "instance_type" {
 default = "t3.nano"
