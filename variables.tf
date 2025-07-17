@@ -11,10 +11,10 @@ default = "t3.nano"
 }
 
 variable "key_name" {
-description = "turn-key"
+  description = "The name of the AWS key pair"
 }
 
 variable "public_key_path" {
-description = "~/.ssh/turn-key.pub"
+  description = "Path to the public key"
 }
 
