@@ -2,10 +2,13 @@ provider "aws" {
 region = var.aws_region
 }
 
-resource "aws_key_pair" "main" {
-key_name = var.key_name
-public_key = file(var.public_key_path)
+resource "aws_instance" "example" {
+  ami           = var.ami
+  instance_type = var.instance_type
+  key_name      = var.key_name
+  ...
 }
+
 
 resource "aws_security_group" "turn_sg" {
 name = "turn-sg"
