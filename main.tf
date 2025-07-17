@@ -39,17 +39,19 @@ tags = {
 Name = "turn-server"
 }
 }
-
 resource "aws_s3_bucket" "project_bucket" {
-  bucket = "my-bucket-1123" # Must be globally unique
-  acl    = "private"
-
-  versioning {
-    enabled = true
-  }
-
+  bucket = "your-unique-bucket-name-1123" # must be globally unique
   tags = {
     Name        = "ProjectBucket"
     Environment = "Dev"
   }
 }
+
+resource "aws_s3_bucket_versioning" "versioning" {
+  bucket = aws_s3_bucket.project_bucket.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
