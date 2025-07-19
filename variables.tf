@@ -27,3 +27,8 @@ variable "s3_bucket_name" {
 }
 variable "subnet_id_1" {}
 variable "subnet_id_2" {}
+variable "subnet_ids" {}
+variable "vpc_id" {
+  description = "ID of the VPC"
+  type        = string
+}

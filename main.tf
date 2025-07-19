@@ -136,18 +136,90 @@ resource "aws_sqs_queue" "project_queue" {
   }
 }
 
-resource "aws_efs_file_system" "project_fs" {
-  creation_token = "project-fs-token"
+# resource "aws_efs_file_system" "project_fs" {
+#   creation_token = "project-fs-token"
+#   tags = {
+#     Name        = "ProjectEFS"
+#     Environment = "Dev"
+#   }
+# }
+
+# resource "aws_efs_mount_target" "project_fs_mount" {
+#   for_each = toset([var.subnet_id_1, var.subnet_id_2])
+
+#   file_system_id  = aws_efs_file_system.project_fs.id
+#   subnet_id       = each.value
+#   security_groups = [aws_security_group.turn_sg_new.id]
+# }
+
+resource "aws_security_group" "alb_sg" {
+  name        = "alb-sg"
+  description = "Allow HTTP inbound traffic"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   tags = {
-    Name        = "ProjectEFS"
-    Environment = "Dev"
+    Name = "alb-sg"
+  }
+}
+resource "aws_lb" "app_lb" {
+  name               = "app-load-balancer"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb_sg.id]
+  subnets            = var.subnet_ids
+
+  tags = {
+    Name = "app-lb"
   }
 }
 
-resource "aws_efs_mount_target" "project_fs_mount" {
-  for_each = toset([var.subnet_id_1, var.subnet_id_2])
+resource "aws_lb_target_group" "app_tg" {
+  name     = "app-target-group"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = var.vpc_id
 
-  file_system_id  = aws_efs_file_system.project_fs.id
-  subnet_id       = each.value
-  security_groups = [aws_security_group.turn_sg_new.id]
+  health_check {
+    path                = "/"
+    protocol            = "HTTP"
+    matcher             = "200"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
+
+  tags = {
+    Name = "app-tg"
+  }
+}
+resource "aws_lb_target_group_attachment" "app_attachment" {
+  target_group_arn = aws_lb_target_group.app_tg.arn
+  target_id        = aws_instance.turn_ec2.id
+  port             = 80
+}
+
+resource "aws_lb_listener" "app_listener" {
+  load_balancer_arn = aws_lb.app_lb.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.app_tg.arn
+  }
 }
