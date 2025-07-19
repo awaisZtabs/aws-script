@@ -74,34 +74,34 @@ resource "aws_dynamodb_table" "messages" {
   }
 }
 
-# resource "aws_iam_role" "lambda_exec_role" {
-#   name = "lambda-exec-role"
+resource "aws_iam_role" "lambda_exec_role" {
+  name = "lambda-exec-role"
 
-#   assume_role_policy = jsonencode({
-#     Version = "2012-10-17"
-#     Statement = [{
-#       Action = "sts:AssumeRole"
-#       Effect = "Allow"
-#       Principal = {
-#         Service = "lambda.amazonaws.com"
-#       }
-#     }]
-#   })
-# }
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "lambda.amazonaws.com"
+      }
+    }]
+  })
+}
 
-# resource "aws_iam_role_policy_attachment" "git" {
-#   role       = aws_iam_role.lambda_exec_role.name
-#   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-# }
+resource "aws_iam_role_policy_attachment" "git" {
+  role       = aws_iam_role.lambda_exec_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
 
-# resource "aws_lambda_function" "hello_lambda" {
-#   function_name = "HelloLambda"
-#   role          = "arn:aws:iam::602873375259:role/RoleForLambdaModLabRole"
-#   handler       = "index.handler"
-#   runtime       = "nodejs18.x"
-#   filename      = "${path.module}/hello_lambda.zip"
-#   source_code_hash = filebase64sha256("${path.module}/hello_lambda.zip")
-# }
+resource "aws_lambda_function" "hello_lambda" {
+  function_name = "HelloLambda"
+  role          = "arn:aws:iam::602873375259:role/RoleForLambdaModLabRole"
+  handler       = "index.handler"
+  runtime       = "nodejs18.x"
+  filename      = "${path.module}/hello_lambda.zip"
+  source_code_hash = filebase64sha256("${path.module}/hello_lambda.zip")
+}
 resource "aws_sns_topic" "alerts" {
   name = "infra-alerts-topic"
 }
@@ -228,7 +228,7 @@ resource "aws_lb_listener" "app_listener" {
 resource "aws_db_instance" "app_db" {
   allocated_storage    = 20
   engine               = "postgres"
-  engine_version       = "15.3"
+#   engine_version       = "15.3"
   instance_class       = "db.t3.micro"
   db_name                  = "appdb"
   username             = var.db_username
