@@ -252,3 +252,17 @@ resource "aws_db_subnet_group" "app_db_subnet_group" {
     Name = "App DB Subnet Group"
   }
 }
+resource "aws_apigatewayv2_api" "http_api" {
+  name          = "project-http-api"
+  protocol_type = "HTTP"
+}
+
+resource "aws_apigatewayv2_stage" "default" {
+  api_id      = aws_apigatewayv2_api.http_api.id
+  name        = "$default"
+  auto_deploy = true
+}
+
+output "api_gateway_url" {
+  value = aws_apigatewayv2_stage.default.invoke_url
+}
