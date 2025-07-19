@@ -21,3 +21,7 @@ variable "public_key_path" {
   description = "Path to the public key"
 }
 
+variable "s3_bucket_name" {
+  description = "Globally unique name for the S3 bucket"
+  type        = string
+}
