@@ -274,7 +274,7 @@ resource "aws_codebuild_project" "docker_build" {
   name          = "docker-build"
   source {
     type            = "GITHUB"
-    location        = "https://github.com/youruser/yourrepo"
+    location        = "https://github.com/awaisZtabs/webee"
   }
   artifacts {
     type = "NO_ARTIFACTS"
