@@ -89,11 +89,25 @@ resource "aws_iam_role" "lambda_exec_role" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_basic_exec" {
-  role       = aws_iam_role.lambda_exec_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+# resource "aws_iam_role_policy_attachment" "git" {
+#   role       = aws_iam_role.lambda_exec_role.name
+#   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+# }
+resource "aws_cloudwatch_metric_alarm" "high_cpu" {
+  alarm_name          = "HighCPUAlarm"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 2
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = 120
+  statistic           = "Average"
+  threshold           = 70
+  alarm_description   = "This metric monitors high CPU utilization"
+  alarm_actions       = [] # You can link to an SNS topic later for notifications
+  dimensions = {
+    InstanceId = aws_instance.turn_ec2.id
+  }
 }
-
 # resource "aws_lambda_function" "hello_lambda" {
 #   function_name = "HelloLambda"
 #   role          = "arn:aws:iam::602873375259:role/RoleForLambdaModLabRole"
