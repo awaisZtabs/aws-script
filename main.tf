@@ -136,21 +136,21 @@ resource "aws_sqs_queue" "project_queue" {
   }
 }
 
-# resource "aws_efs_file_system" "project_fs" {
-#   creation_token = "project-fs-token"
-#   tags = {
-#     Name        = "ProjectEFS"
-#     Environment = "Dev"
-#   }
-# }
+resource "aws_efs_file_system" "project_fs" {
+  creation_token = "project-fs-token"
+  tags = {
+    Name        = "ProjectEFS"
+    Environment = "Dev"
+  }
+}
 
-# resource "aws_efs_mount_target" "project_fs_mount" {
-#   for_each = toset([var.subnet_id_1, var.subnet_id_2])
+resource "aws_efs_mount_target" "project_fs_mount" {
+  for_each = toset([var.subnet_id_1, var.subnet_id_2])
 
-#   file_system_id  = aws_efs_file_system.project_fs.id
-#   subnet_id       = each.value
-#   security_groups = [aws_security_group.turn_sg_new.id]
-# }
+  file_system_id  = aws_efs_file_system.project_fs.id
+  subnet_id       = each.value
+  security_groups = [aws_security_group.turn_sg_new.id]
+}
 
 resource "aws_security_group" "alb_sg" {
   name        = "alb-sg"
@@ -221,5 +221,36 @@ resource "aws_lb_listener" "app_listener" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.app_tg.arn
+  }
+}
+
+
+resource "aws_db_instance" "app_db" {
+  allocated_storage    = 20
+  engine               = "postgres"
+  engine_version       = "15.3"
+  instance_class       = "db.t3.micro"
+  name                 = "appdb"
+  username             = var.db_username
+  password             = var.db_password
+  parameter_group_name = "default.postgres15"
+  skip_final_snapshot  = true
+  publicly_accessible  = true
+  vpc_security_group_ids = [aws_security_group.turn_sg.id]
+  db_subnet_group_name = aws_db_subnet_group.app_db_subnet_group.name
+
+  tags = {
+    Name = "AppRDS"
+  }
+}
+
+resource "aws_db_subnet_group" "app_db_subnet_group" {
+  name       = "app-db-subnet-group"
+  subnet_ids = [
+    aws_subnet.public_1.id,
+    aws_subnet.public_2.id
+  ]
+  tags = {
+    Name = "App DB Subnet Group"
   }
 }

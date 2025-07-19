@@ -32,3 +32,14 @@ variable "vpc_id" {
   description = "ID of the VPC"
   type        = string
 }
+
+variable "db_username" {
+  default     = "admin"
+  description = "Master DB username"
+}
+
+variable "db_password" {
+  description = "Master DB password"
+  type        = string
+  sensitive   = true
+}

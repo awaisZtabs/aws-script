@@ -9,3 +9,4 @@ subnet_ids = [
   "subnet-07dbf798333414e3f"
 ]
 vpc_id = "vpc-02d5db55a5b4a2b92" # replace with your real VPC ID
+db_password = "!@Zxc/23api!"
