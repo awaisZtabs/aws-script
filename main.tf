@@ -266,3 +266,24 @@ resource "aws_apigatewayv2_stage" "default" {
 output "api_gateway_url" {
   value = aws_apigatewayv2_stage.default.invoke_url
 }
+resource "aws_ecr_repository" "app_repo" {
+  name = "my-docker-app"
+}
+
+resource "aws_codebuild_project" "docker_build" {
+  name          = "docker-build"
+  source {
+    type            = "GITHUB"
+    location        = "https://github.com/youruser/yourrepo"
+  }
+  artifacts {
+    type = "NO_ARTIFACTS"
+  }
+  environment {
+    compute_type                = "BUILD_GENERAL1_SMALL"
+    image                       = "aws/codebuild/standard:5.0"
+    type                        = "LINUX_CONTAINER"
+    privileged_mode             = true # required for Docker
+  }
+  service_role = "arn:aws:iam::602873375259:role/LabRole"
+}
