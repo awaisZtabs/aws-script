@@ -230,7 +230,7 @@ resource "aws_db_instance" "app_db" {
   engine               = "postgres"
   engine_version       = "15.3"
   instance_class       = "db.t3.micro"
-  name                 = "appdb"
+  db_name                  = "appdb"
   username             = var.db_username
   password             = var.db_password
   parameter_group_name = "default.postgres15"
