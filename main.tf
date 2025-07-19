@@ -32,7 +32,8 @@ resource "aws_instance" "turn_ec2" {
 ami = var.ami_id
 instance_type = var.instance_type
 key_name =  var.key_name
-vpc_security_group_ids = [aws_security_group.turn_sg.id]
+vpc_security_group_ids = [aws_security_group.turn_sg_new.id]
+
 user_data = file("userdata.sh")
 
 tags = {
