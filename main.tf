@@ -236,7 +236,7 @@ resource "aws_db_instance" "app_db" {
   parameter_group_name = "default.postgres15"
   skip_final_snapshot  = true
   publicly_accessible  = true
-  vpc_security_group_ids = [aws_security_group.turn_sg.id]
+  vpc_security_group_ids = [aws_security_group.turn_sg_new.id]
   db_subnet_group_name = aws_db_subnet_group.app_db_subnet_group.name
 
   tags = {
