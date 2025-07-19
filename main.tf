@@ -96,9 +96,9 @@ resource "aws_iam_role_policy_attachment" "lambda_basic_exec" {
 
 resource "aws_lambda_function" "hello_lambda" {
   function_name = "HelloLambda"
-  role          = aws_iam_role.lambda_exec_role.arn
+  role          = "arn:aws:iam::602873375259:role/RoleForLambdaModLabRole"
   handler       = "index.handler"
   runtime       = "nodejs18.x"
-  filename      = "${path.module}/lambda/hello_lambda.zip"
-  source_code_hash = filebase64sha256("${path.module}/lambda/hello_lambda.zip")
+  filename      = "${path.module}/hello_lambda.zip"
+  source_code_hash = filebase64sha256("${path.module}/hello_lambda.zip")
 }
