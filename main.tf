@@ -135,17 +135,4 @@ resource "aws_sqs_queue" "project_queue" {
     Purpose     = "Queue for async task processing"
   }
 }
-resource "aws_efs_file_system" "project_fs" {
-  creation_token = "project-fs-token"
-  tags = {
-    Name        = "ProjectEFS"
-    Environment = "Dev"
-  }
-}
-resource "aws_efs_mount_target" "project_fs_mount" {
-  for_each = toset([var.subnet_id_1, var.subnet_id_2])
 
-  file_system_id  = aws_efs_file_system.project_fs.id
-  subnet_id       = each.value
-  security_groups = [aws_security_group.turn_sg.id]
-}
