@@ -246,10 +246,8 @@ resource "aws_db_instance" "app_db" {
 
 resource "aws_db_subnet_group" "app_db_subnet_group" {
   name       = "app-db-subnet-group"
-  subnet_ids = [
-    aws_subnet.public_1.id,
-    aws_subnet.public_2.id
-  ]
+  subnet_ids = var.subnet_ids
+
   tags = {
     Name = "App DB Subnet Group"
   }
