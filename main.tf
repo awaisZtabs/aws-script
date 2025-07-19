@@ -93,6 +93,25 @@ resource "aws_dynamodb_table" "messages" {
 #   role       = aws_iam_role.lambda_exec_role.name
 #   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 # }
+
+# resource "aws_lambda_function" "hello_lambda" {
+#   function_name = "HelloLambda"
+#   role          = "arn:aws:iam::602873375259:role/RoleForLambdaModLabRole"
+#   handler       = "index.handler"
+#   runtime       = "nodejs18.x"
+#   filename      = "${path.module}/hello_lambda.zip"
+#   source_code_hash = filebase64sha256("${path.module}/hello_lambda.zip")
+# }
+resource "aws_sns_topic" "alerts" {
+  name = "infra-alerts-topic"
+}
+
+resource "aws_sns_topic_subscription" "email_alert" {
+  topic_arn = aws_sns_topic.alerts.arn
+  protocol  = "email"
+  endpoint  = "awaisali11159@gmail.com"
+}
+
 resource "aws_cloudwatch_metric_alarm" "high_cpu" {
   alarm_name          = "HighCPUAlarm"
   comparison_operator = "GreaterThanThreshold"
@@ -103,16 +122,9 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu" {
   statistic           = "Average"
   threshold           = 70
   alarm_description   = "This metric monitors high CPU utilization"
-  alarm_actions       = [] # You can link to an SNS topic later for notifications
+  alarm_actions       = [aws_sns_topic.alerts.arn] # <--- updated line
   dimensions = {
     InstanceId = aws_instance.turn_ec2.id
   }
 }
-# resource "aws_lambda_function" "hello_lambda" {
-#   function_name = "HelloLambda"
-#   role          = "arn:aws:iam::602873375259:role/RoleForLambdaModLabRole"
-#   handler       = "index.handler"
-#   runtime       = "nodejs18.x"
-#   filename      = "${path.module}/hello_lambda.zip"
-#   source_code_hash = filebase64sha256("${path.module}/hello_lambda.zip")
-# }
+
