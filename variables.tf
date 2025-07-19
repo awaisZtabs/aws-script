@@ -25,3 +25,5 @@ variable "s3_bucket_name" {
   description = "Globally unique name for the S3 bucket"
   type        = string
 }
+variable "subnet_id_1" {}
+variable "subnet_id_2" {}
