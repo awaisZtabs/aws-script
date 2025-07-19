@@ -9,8 +9,8 @@ resource "aws_instance" "example" {
 }
 
 
-resource "aws_security_group" "turn_sg" {
-name = "turn-sg"
+resource "aws_security_group" "turn_sg_new" {
+name = "turn-sg-2"
 description = "Allow SSH access"
 
 ingress {
